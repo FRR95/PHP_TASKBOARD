@@ -13,9 +13,9 @@ include 'common_template.php';
    
     
 <body>
-<a href="signin.php">AQUI REGISTRARTE</a>  
-<a href="login.php">AQUI INICIAR SESION</a>    
-<a href="usersinfo.php">MIRAR DIFERENTE PERFILES</a> 
+  
+   
+
 
 <?php
 
@@ -23,46 +23,89 @@ session_start();
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION["nombre_usuario"])) {
-    exit;
+ echo '<div class="card container mt-5 text-center mb-3" style="width: 18rem;">
+ <div class="card-body">
+   <h5 class="card-title">¡HOLA!</h5>
+   <p class="card-text">Para poder ver tu contenido de tareas debes de iniciar sesion</p>
+   <p class="card-text">¿No tienes una cuenta?</p>
+   <a href="signin.php" class="btn btn-primary">REGISTRATE</a>
+ </div>
+</div>'; 
 }
 else{
 // Obtener el nombre de usuario almacenado en la sesión
 $nombre_usuario = $_SESSION["nombre_usuario"];
 $usuario_id = $_SESSION["usuario_id"];
 ?>
-<h2>Bienvenido, <?php echo $nombre_usuario; ?></h2>
-    <p>Esta es la página de inicio. Puedes mostrar aquí el contenido para el usuario después de iniciar sesión.</p>
-    
+
 
     
-    <table>
-    <h2>Tareas del Usuario</h2>
-        <tr>
-            <th>Descripción</th>
-            <th>Fecha Límite</th>
-            <th>BORRAR</th>
-        </tr>
-        <?php
-        $sql = "SELECT id, descripcion, fecha_limite FROM tareas_ WHERE usuario_id = $usuario_id";
-        $resultado = $conexion->query($sql);
-        while ($fila = $resultado->fetch_assoc()) {
-        ?>
-        <tr>
-        <td><?php echo $fila["descripcion"]?></td>
-        <td><?php echo $fila["fecha_limite"]?></td>
-        <td><a href='delete.php?id="<?php echo $fila['id'] ?>"' id='btn'>BORRAR</a></td>  
-        </tr>
-        <?php
+<div class="card container mb-3 text-center">
+  <div class="card-header">
+  <h2>Bienvenido, <?php echo $nombre_usuario; ?>!!</h2>
+  </div>
+  <div class="card-body">
+<p class="card-text">Aqui podras ver,añadir o eleiminar tus tareas pendientes</p>
+<a href="logout.php"><button class="btn btn-danger">Cerrar sesión</button></a>
+  </div>
+</div>
+
+<div class="container text-center">
+        <div class="reveal row row-cols-3 g-3">
+<?php 
+    $sql = "SELECT id, descripcion, fecha_limite FROM tareas_ WHERE usuario_id = $usuario_id";
+    $resultado = $conexion->query($sql);
+    while ($fila = $resultado->fetch_assoc()) {
+		
+	?>
+    <div class="my-3">
+    <div class="col ">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text"><?php echo $fila["descripcion"] ?></p>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Fecha de realización:<?php echo $fila["fecha_limite"] ?></p>
+            </div>
+
+            <div class="card-footer ">
+        <a href='delete.php?id="<?php echo $fila['id'] ?>"' class="btn btn-danger">BORRRAR</a>
+  </div>
+            
+        </div>
+
+ 
+    </div>
+    </div>
+    <?php 
         }
         ?>
-    </ble>
-    <a href="logout.php">Cerrar Sesión</a>
-    <h2>AÑADE AQUI TUS TAREAS</h2>
-    <form action="insert_task.php" method="POST">
-    Descripción de la tarea: <input type="text" name="descripcion"><br>
-    Fecha límite: <input type="date" name="fecha_limite"><br>
-    <input type="submit" value="Agregar Tarea">
+</div>
+</div>
+
+<div class="card container text-center">
+
+<div class="card-header">
+<h2>AÑADE AQUI TUS TAREAS</h2>
+  </div>
+            <div class="card-body">
+            <form action="insert_task.php" method="POST">
+
+            <label  class="form-label">Descripción de la tarea</label>
+     <input type="text" placeholder="Descripción"  name="descripcion"><br>
+     <label  class="form-label"> Fecha límite</label>
+    <input type="date" placeholder="Fecha límite" name="fecha_limite"><br>
+    <button type="submit" class="btn btn-primary">Agregar tarea</button>
 </form>
+
+            </div>
+
+            
+        </div>
+
+    
+    
+
 <?php
 }
 ?>
